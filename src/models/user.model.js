@@ -91,7 +91,8 @@ userSchema.virtual('username').get(function () {
   return `${this.firstname} ${this.lastname}`;
 });
 // add plugin that converts mongoose to json
-userSchema.plugin(toJSON);
+// By including { virtuals: true } as an option when applying the toJSON plugin, virtual fields like username will be included in the output
+userSchema.plugin(toJSON, { virtuals: true });
 
 userSchema.index({ name: 1, email: 1 }, { unique: true });
 

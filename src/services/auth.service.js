@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // Configs
-import tokenTypes from '../config/tokens';
+import { tokenTypes } from '../config/tokens';
 
 // Utils
 import catchAsync from '../utils/catchAsync';

@@ -13,6 +13,7 @@ import {
 
 // Services
 import { authService } from '../services';
+import { tokenTypes, tokenExpiration } from '../config/tokens';
 
 /**
  * @desc      Sign Up Controller
@@ -37,7 +38,18 @@ export const signup = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If everything is OK, send data
+  // 3) If everything is OK, set client tokens on response
+  const { refreshToken, accessToken } = tokens;
+  res.cookie(tokenTypes.ACCESS, accessToken, {
+    expiresIn: tokenExpiration.ACCESS,
+    httpOnly: true
+  });
+  res.cookie(tokenTypes.REFRESH, refreshToken, {
+    expiresIn: tokenExpiration.REFRESH,
+    httpOnly: true
+  });
+
+  // 4) then, send data
   return res.status(statusCode).json({
     type,
     message: req.polyglot.t(message),

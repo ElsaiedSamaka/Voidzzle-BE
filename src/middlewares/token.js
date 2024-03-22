@@ -4,7 +4,7 @@ import moment from 'moment';
 
 // Configs
 import config from '../config/config';
-import tokenTypes from '../config/tokens';
+import { tokenTypes } from '../config/tokens';
 
 // Models
 import { User, Token } from '../models/index';

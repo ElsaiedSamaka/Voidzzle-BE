@@ -5,4 +5,11 @@ const tokenTypes = {
   VERIFY_EMAIL: 'verifyEmail'
 };
 
-export default tokenTypes;
+const tokenExpiration = {
+  ACCESS: '15m',
+  REFRESH: '30d',
+  RESET_PASSWORD: '10m',
+  VERIFY_EMAIL: '10m'
+};
+
+export { tokenTypes, tokenExpiration };

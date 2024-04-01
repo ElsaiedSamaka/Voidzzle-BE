@@ -6,7 +6,7 @@ const tokenTypes = {
 };
 
 const tokenExpiration = {
-  ACCESS: '15m',
+  ACCESS: '30m',
   REFRESH: '30d',
   RESET_PASSWORD: '10m',
   VERIFY_EMAIL: '10m'

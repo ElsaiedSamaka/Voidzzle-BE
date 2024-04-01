@@ -83,6 +83,17 @@ export const signin = catchAsync(async (req, res) => {
     });
   }
 
+  // 3) If everything is OK, set client tokens on response
+  const { refreshToken, accessToken } = tokens;
+  res.cookie(tokenTypes.ACCESS, accessToken, {
+    expiresIn: tokenExpiration.ACCESS,
+    httpOnly: true
+  });
+  res.cookie(tokenTypes.REFRESH, refreshToken, {
+    expiresIn: tokenExpiration.REFRESH,
+    httpOnly: true
+  });
+
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
@@ -104,6 +115,9 @@ export const logout = catchAsync(async (req, res) => {
   const { type, message, statusCode } = await authService.logout(
     req.body.refreshToken
   );
+  // 1.1) Clear both access & refresh token from the client-side
+  res.clearCookie('refresh');
+  res.clearCookie('access');
 
   // 2) Check if something went wrong
   if (type === 'Error') {

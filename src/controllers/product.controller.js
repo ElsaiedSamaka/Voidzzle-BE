@@ -82,7 +82,6 @@ export const getProduct = catchAsync(async (req, res) => {
  */
 export const addProduct = catchAsync(async (req, res) => {
   const { body, files, user } = req;
-
   // 1) Create product
   const { type, message, statusCode, product } =
     await productService.createProduct(body, files, user.id);

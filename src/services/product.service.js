@@ -92,9 +92,8 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     sizes,
     quantity
   } = body;
-
-  const mainImage = files.filter((image) => image.fieldname === 'mainImage');
-  const images = files.filter((image) => image.fieldname === 'images');
+  const mainImage = files?.filter((image) => image.fieldname === 'img');
+  const images = files?.filter((image) => image.fieldname === 'images');
 
   // 1) Check if there any empty field
   if (
@@ -102,12 +101,10 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     !description ||
     !category ||
     !price ||
-    !priceDiscount ||
-    !colors ||
-    !sizes ||
+    // !colors ||
+    // !sizes ||
     !quantity ||
-    mainImage.length === 0 ||
-    images.length === 0
+    mainImage.length === 0
   ) {
     return {
       type: 'Error',
@@ -153,8 +150,8 @@ export const createProduct = catchAsync(async (body, files, seller) => {
   });
 
   // 5) Convert colors and sizes string into an array
-  const colorsArray = colors.split(',').map((color) => color.trim());
-  const sizesArray = sizes.split(',').map((size) => size.trim());
+  const colorsArray = colors?.split(',').map((color) => color.trim());
+  const sizesArray = sizes?.split(',').map((size) => size.trim());
   const sizesDocIds = [];
   const colorsDocIds = [];
 

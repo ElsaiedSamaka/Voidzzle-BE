@@ -14,23 +14,32 @@ import { User } from '../models/index';
 
 const protect = catchAsync(async (req, res, next) => {
   // 1) Getting the token
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1];
+  const cookieHeader = req.headers.cookie;
 
-  // 2) Check if token does not exist
-  if (!token) {
+  // 2) Parse the cookie header
+  const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
+    const [name, value] = cookie.trim().split('=');
+    acc[name] = value;
+    return acc;
+  }, {});
+
+  // 3) Check if the access token exists
+  const accessToken = cookies.access;
+
+  // 4) Check if token does not exist
+  if (!accessToken) {
     return next(
       new AppError('You are not logged in! Please login to get access.', 401)
     );
   }
 
-  // 3) Token verification
-  const decoded = await promisify(jwt.verify)(token, config.jwt.secret);
+  // 5) Token verification
+  const decoded = await promisify(jwt.verify)(accessToken, config.jwt.secret);
 
-  // 4) Extract user data from database
+  // 6) Extract user data from database
   const currentUser = await User.findById(decoded.sub);
 
-  // 5) Check if user does not exist
+  // 7) Check if user does not exist
   if (!currentUser) {
     return next(
       new AppError(
@@ -40,13 +49,14 @@ const protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 6) Check if user changed password after the token was issued
+  // 8) Check if user changed password after the token was issued
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
       new AppError('User recently changed password! Please login again!', 401)
     );
   }
 
+  // 9) Assign currentUser to req.user
   req.user = currentUser;
 
   next();

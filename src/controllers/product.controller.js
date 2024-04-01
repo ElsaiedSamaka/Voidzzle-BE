@@ -39,7 +39,7 @@ export const getAllProducts = catchAsync(async (req, res) => {
   return res.status(statusCode).json({
     type,
     message: req.polyglot.t(message),
-    products
+    data: products
   });
 });
 

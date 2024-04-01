@@ -99,11 +99,11 @@ export const createProduct = catchAsync(async (body, files, seller) => {
   if (
     !name ||
     !description ||
-    !category ||
-    !price ||
-    // !colors ||
-    // !sizes ||
-    !quantity ||
+    // !category ||
+    // !price ||
+    // // !colors ||
+    // // !sizes ||
+    // !quantity ||
     mainImage.length === 0
   ) {
     return {
@@ -116,9 +116,9 @@ export const createProduct = catchAsync(async (body, files, seller) => {
   const folderName = `Products/${name.trim().split(' ').join('')}`;
 
   // 2) Upload images to cloudinary
-  const imagesPromises = images.map((image) =>
-    uploadFile(dataUri(image).content, folderName)
-  );
+  const imagesPromises = images.length
+    ? images?.map((image) => uploadFile(dataUri(image).content, folderName))
+    : [];
   const imagesResult = await Promise.all(imagesPromises);
   const imageResult = await uploadFile(
     dataUri(mainImage[0]).content,
@@ -143,10 +143,10 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     name,
     description,
     category,
-    price: Number(price),
-    priceDiscount: Number(priceDiscount),
+    price,
+    priceDiscount,
     seller,
-    quantity: Number(quantity)
+    quantity
   });
 
   // 5) Convert colors and sizes string into an array

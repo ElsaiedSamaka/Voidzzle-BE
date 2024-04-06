@@ -16,7 +16,8 @@ export const queryProducts = catchAsync(async (req) => {
   const populateQuery = [
     { path: 'colors', select: 'color' },
     { path: 'sizes', select: 'size' },
-    { path: 'category', select: 'name' }
+    { path: 'category', select: 'name' },
+    { path: 'seller', select: 'firstname lastname email' }
   ];
 
   const products = await APIFeatures(req, Product, populateQuery);

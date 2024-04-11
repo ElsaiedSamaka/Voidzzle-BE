@@ -14,10 +14,9 @@ import { User } from '../models/index';
 
 const protect = catchAsync(async (req, res, next) => {
   // 1) Getting the token
-  const cookieHeader = req.headers.cookie;
-
+  const authHeaders = req.headers.autherazation;
   // 2) Parse the cookie header
-  const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
+  const cookies = authHeaders.split(';').reduce((acc, cookie) => {
     const [name, value] = cookie.trim().split('=');
     acc[name] = value;
     return acc;

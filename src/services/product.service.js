@@ -94,18 +94,18 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     quantity
   } = body;
   const mainImage = files?.filter((image) => image.fieldname === 'img');
-  const images = files?.filter((image) => image.fieldname === 'images');
+  const images = files?.filter((image) => image.fieldname === 'images') || [];
 
   // 1) Check if there any empty field
   if (
     !name ||
-    !description ||
+    !description
     // !category ||
     // !price ||
     // // !colors ||
     // // !sizes ||
     // !quantity ||
-    mainImage.length === 0
+    // mainImage.length === 0
   ) {
     return {
       type: 'Error',
@@ -114,31 +114,29 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     };
   }
 
-  const folderName = `Products/${name.trim().split(' ').join('')}`;
+  const folderName = `Products/${name.trim()?.split(' ').join('')}`;
 
   // 2) Upload images to cloudinary
-  const imagesPromises = images.length
-    ? images?.map((image) => uploadFile(dataUri(image).content, folderName))
-    : [];
-  const imagesResult = await Promise.all(imagesPromises);
-  const imageResult = await uploadFile(
-    dataUri(mainImage[0]).content,
-    folderName
+  const mainImageResult = mainImage.length
+    ? await uploadFile(dataUri(mainImage[0]).content, folderName)
+    : null;
+
+  const imagesPromises = images.map((image) =>
+    uploadFile(dataUri(image).content, folderName)
   );
+  const imagesResults = await Promise.all(imagesPromises);
 
-  const imagesLink = [];
-  const imagesId = [];
+  // 3) Prepare image data
+  const mainImageUrl = mainImageResult ? mainImageResult.secure_url : null;
+  const mainImageId = mainImageResult ? mainImageResult.public_id : null;
 
-  // 3) Push images links & images IDs to the arrays
-  imagesResult.forEach((image) => {
-    imagesLink.push(image.secure_url);
-    imagesId.push(image.public_id);
-  });
+  const imagesLink = imagesResults.map((image) => image.secure_url);
+  const imagesId = imagesResults.map((image) => image.public_id);
 
   // 4) Create product
   let product = await Product.create({
-    mainImage: imageResult.secure_url,
-    mainImageId: imageResult.public_id,
+    mainImage: mainImageUrl?.secure_url,
+    mainImageId: mainImageId?.public_id,
     images: imagesLink,
     imagesId,
     name,
@@ -151,8 +149,8 @@ export const createProduct = catchAsync(async (body, files, seller) => {
   });
 
   // 5) Convert colors and sizes string into an array
-  const colorsArray = colors?.split(',').map((color) => color.trim());
-  const sizesArray = sizes?.split(',').map((size) => size.trim());
+  const colorsArray = colors?.split(',').map((color) => color.trim()) || [];
+  const sizesArray = sizes?.split(',').map((size) => size.trim()) || [];
   const sizesDocIds = [];
   const colorsDocIds = [];
 

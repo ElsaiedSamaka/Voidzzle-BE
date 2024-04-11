@@ -14,12 +14,12 @@ const productSchema = mongoose.Schema(
     slug: String,
     mainImage: {
       type: String,
-      required: [true, 'A product must have a main image']
+      required: [false, '']
     },
     mainImageId: String,
     images: {
       type: [String],
-      required: [true, 'A product must have sub images']
+      required: [false, '']
     },
     imagesId: Array,
     description: {

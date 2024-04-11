@@ -15,6 +15,7 @@ const deleteAtPath = (obj, path, index) => {
 const toJSON = (schema) => {
   let transform;
   if (schema.options.toJSON && schema.options.toJSON.transform) {
+    // eslint-disable-next-line prefer-destructuring
     transform = schema.options.toJSON.transform;
   }
 
@@ -22,7 +23,7 @@ const toJSON = (schema) => {
     transform(doc, ret, options) {
       Object.keys(schema.paths).forEach((path) => {
         if (schema.paths[path].options && schema.paths[path].options.private) {
-          deleteAtPath(ret, path.split('.'), 0);
+          deleteAtPath(ret, path?.split('.'), 0);
         }
       });
 

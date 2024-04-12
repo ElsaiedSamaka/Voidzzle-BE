@@ -38,7 +38,7 @@ export const signup = catchAsync(async (body, profileImage) => {
   if (!phone) phone = '';
   if (!role) role = 'user';
 
-  if (!firstname || !lastname || !email || !password || !passwordConfirmation) {
+  if (!email || !password || !passwordConfirmation) {
     return {
       type: 'Error',
       message: 'fieldsRequired',

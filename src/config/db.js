@@ -8,7 +8,10 @@ import config from './config';
  */
 const connectDB = async () => {
   // const DB = config.db.url.replace('<PASSWORD>', config.db.password);
-  const DB = process.env.DATABASE_DEV_CONNECTION;
+  const DB =
+    config.env === 'development'
+      ? process.env.DATABASE_DEV_CONNECTION
+      : config.db.url;
 
   mongoose.set('autoIndex', true);
 

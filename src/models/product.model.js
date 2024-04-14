@@ -46,7 +46,7 @@ const productSchema = mongoose.Schema(
         // this only points to current doc on NEW documnet creation
         return (
           Number(this.price) -
-          (Number(this.price) / 100) * Number(this.priceDiscount)
+          (Number(this.price) / 100) * Number(this.priceDiscount || 0)
         );
       }
     },

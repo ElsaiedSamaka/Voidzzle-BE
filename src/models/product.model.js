@@ -122,11 +122,25 @@ productSchema.virtual('reviews', {
 });
 
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() !.update()
-productSchema.pre('save', function (next) {
+productSchema.pre('save', async function (next) {
+  if (this.isNew) {
+    try {
+      const populatedProduct = await this.populate({
+        path: 'seller',
+        select: 'email'
+      }).execPopulate();
+
+      this.seller = populatedProduct.seller; // Replace the seller ObjectId with the populated seller object
+    } catch (error) {
+      // Handle any errors
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  }
+
   this.slug = slugify(this.name, { lower: true });
   next();
 });
-
 const Product = mongoose.model('Product', productSchema);
 
 export default Product;
